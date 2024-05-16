@@ -1,35 +1,34 @@
 ---
-title: "Use egctl"
+title: "使用 egctl"
 ---
 
-`egctl` is a command line tool to provide additional functionality for Envoy Gateway users.
+`egctl` 是一个命令行工具，可为 Envoy Gateway 用户提供附加功能。
 
 ## egctl experimental translate
 
-This subcommand allows users to translate from an input configuration type to an output configuration type.
+该子命令允许用户从输入配置类型转换为输出配置类型。
 
-The `translate` subcommand can translate Kubernetes resources to:
+`translate` 子命令可以将 Kubernetes 资源翻译为：
 
-* Gateway API resources
+* Gateway API 资源
 
-  This is useful in order to see how validation would occur if these resources were applied to Kubernetes. 
+  这对于查看将这些资源应用于 Kubernetes 时如何进行验证非常有用。
   
-  Use the `--to gateway-api` parameter to translate to Gateway API resources.
+  使用 `--to gateway-api` 参数转换为 Gateway API 资源。
   
-* Envoy Gateway intermediate representation (IR)
+* Envoy Gateway 中间表示（IR - Intermediate Representation）
 
-  This represents Envoy Gateway's translation of the Gateway API resources.
+  这表现为 Envoy Gateway 对 Gateway API 资源的翻译。
   
-  Use the `--to ir` parameter to translate to Envoy Gateway intermediate representation.
-  
+  使用 `--to ir` 参数转换为 Envoy Gateway IR。
+
 * Envoy Proxy xDS
 
-  This is the xDS configuration provided to Envoy Proxy.
-  
-  Use the `--to xds` parameter to translate to Envoy Proxy xDS.
+  这是提供给 Envoy Proxy 的 xDS 配置。
 
-In the below example, we will translate the Kubernetes resources (including the Gateway API resources) into xDS
-resources.
+  使用 `--to xds` 参数转换为 Envoy Proxy xDS。
+
+在下面的示例中，我们将 Kubernetes 资源（包括 Gateway API 资源）转换为 xDS 资源。
 
 ```shell
 cat <<EOF | egctl x translate --from gateway-api --to xds -f -
@@ -273,7 +272,8 @@ configs:
 resourceType: all
 ```  
 
-You can also use the `--type`/`-t` flag to retrieve specific output types. In the below example, we will translate the Kubernetes resources (including the Gateway API resources) into xDS `route` resources.
+您还可以使用 `--type`/`-t` 标志来检索特定的输出类型。在下面的示例中，
+我们将 Kubernetes 资源（包括 Gateway API 资源）转换为 xDS `route` 资源。
 
 ```shell
 cat <<EOF | egctl x translate --from gateway-api --to xds -t route -f -
@@ -363,11 +363,11 @@ dynamicRouteConfigs:
 resourceType: route
 ```
 
-### Add Missing Resources
+### 添加缺失的资源 {#add-missing-resources}
 
-You can pass the `--add-missing-resources` flag to use dummy non Gateway API resources instead of specifying them explicitly.
+您可以传递 `--add-missing-resources` 标志来使用虚拟非 Gateway API 资源，而不是显式指定它们。
 
-For example, this will provide the similar result as the above:
+例如，这将提供与上面类似的结果：
 
 ```shell
 cat <<EOF | egctl x translate --add-missing-resources --from gateway-api --to gateway-api -t route -f -
@@ -414,8 +414,7 @@ spec:
 EOF
 ```
 
-You can see the output contains a [EnvoyProxy][] resource that
-can be used as a starting point to modify the xDS bootstrap resource for the managed Envoy Proxy fleet.
+您可以看到输出包含 [EnvoyProxy][] 资源，该资源可用作修改托管 Envoy Proxy 队列的 xDS 引导资源的起点。
 
 ```yaml
 envoyProxy:
@@ -586,7 +585,7 @@ httpRoutes:
         name: eg
 ```
 
-Sometimes you might find that egctl doesn't provide an expected result. For example, the following example provides an empty route resource:
+有时您可能会发现 egctl 没有提供预期的结果。例如，以下示例提供了一个空的路由资源：
 
 ```shell
 cat <<EOF | egctl x translate --from gateway-api --type route --to xds -f -
@@ -635,9 +634,10 @@ xds:
     '@type': type.googleapis.com/envoy.admin.v3.RoutesConfigDump
 ```
 
-### Validating Gateway API Configuration
+### 验证 Gateway API 配置 {#validating-gateway-api-configuration}
 
-You can add an additional target `gateway-api` to show the processed Gateway API resources. For example, translating the above resources with the new argument shows that the HTTPRoute is rejected because there is no ready listener for it:
+您可以添加额外的目标 `gateway-api` 来显示已处理的 Gateway API 资源。
+例如，使用新参数转换上述资源显示 HTTPRoute 会被拒绝，因为没有准备好的侦听器：
 
 ```shell
 cat <<EOF | egctl x translate --from gateway-api --type route --to gateway-api,xds -f -
@@ -761,19 +761,18 @@ xds:
 
 ## egctl experimental status
 
-This subcommand allows users to show the summary of the status of specific or all resource types, in order to quickly find
-out the status of any resources.
+该子命令允许用户显示特定或所有资源类型的状态摘要，以便快速找出任何资源的状态。
 
-By default, `egctl x status` display all the conditions for one resource type. You can either add `--quiet` to only
-display the latest condition, or add `--verbose` to display more details about current status.
+默认情况下，`egctl x status` 显示一种资源类型的所有条件。
+您可以添加 `--quiet` 以仅显示最新状态，也可以添加 `--verbose` 以显示有关当前状态的更多详细信息。
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="注意" color="primary" %}}
 
-The resource types that this subcommand currently supports:
+该子命令当前支持的资源类型：
 
-- `xRoute`, `HTTPRoute`, `GRPCRoute`, `TLSRoute`, `TCPRoute`, `UDPRoute`
-- `xPolicy`, `BackendTLSPolicy`, `BackendTrafficPolicy`, `ClientTrafficPolicy`, `EnvoyPatchPolicy`, `SecurityPolicy`
-- `all`, `GatewayClass`, `Gateway`
+- `xRoute`、`HTTPRoute`、`GRPCRoute`、`TLSRoute`、`TCPRoute`、`UDPRoute`
+- `xPolicy`、`BackendTLSPolicy`、`BackendTrafficPolicy`、`ClientTrafficPolicy`、`EnvoyPatchPolicy`、`SecurityPolicy`
+- `all`、`GatewayClass`、`Gateway`
 
 {{% /alert %}}
 
