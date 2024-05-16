@@ -6,14 +6,13 @@ backendTLSPolicies:
     name: policy-btls-grpc
     namespace: default
   spec:
-    targetRef:
-      group: ""
+    targetRefs:
+    - group: ""
       kind: Service
       name: grpc-backend
-      namespace: envoy-gateway
       sectionName: "8000"
-    tls:
-      caCertRefs:
+    validation:
+      caCertificateRefs:
       - group: ""
         kind: ConfigMap
         name: ca-cmap
@@ -51,7 +50,6 @@ envoyExtensionPolicies:
       group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: httproute-1
-      namespace: default
   status:
     ancestors:
     - ancestorRef:
@@ -217,10 +215,7 @@ xdsIR:
         mergeSlashes: true
       port: 10080
       routes:
-      - backendWeights:
-          invalid: 0
-          valid: 0
-        destination:
+      - destination:
           name: httproute/default/httproute-1/rule/0
           settings:
           - addressType: IP
@@ -256,10 +251,7 @@ xdsIR:
           distinct: false
           name: ""
           prefix: /foo
-      - backendWeights:
-          invalid: 0
-          valid: 0
-        destination:
+      - destination:
           name: httproute/default/httproute-2/rule/0
           settings:
           - addressType: IP

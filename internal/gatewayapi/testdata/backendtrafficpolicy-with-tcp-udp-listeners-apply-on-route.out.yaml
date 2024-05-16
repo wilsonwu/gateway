@@ -46,7 +46,6 @@ backendTrafficPolicies:
       group: gateway.networking.k8s.io
       kind: UDPRoute
       name: udp-app-1
-      namespace: default
     tcpKeepalive:
       idleTime: 20m
       interval: 60s
@@ -119,7 +118,6 @@ backendTrafficPolicies:
       group: gateway.networking.k8s.io
       kind: TCPRoute
       name: tcp-app-1
-      namespace: default
     tcpKeepalive:
       idleTime: 20m
       interval: 60s
@@ -366,26 +364,27 @@ xdsIR:
             maxConnectionDuration: 17s
           tcp:
             connectTimeout: 15s
-        tls: {}
     udp:
     - address: 0.0.0.0
-      destination:
-        name: udproute/default/udp-app-1/rule/-1
-        settings:
-        - addressType: IP
-          endpoints:
-          - host: 7.7.7.7
-            port: 8162
-          protocol: UDP
-          weight: 1
-      loadBalancer:
-        consistentHash:
-          sourceIP: true
-      name: default/tcp-gateway/foo/udp-app-1
+      name: default/tcp-gateway/foo
       port: 8162
-      timeout:
-        http:
-          connectionIdleTimeout: 16s
-          maxConnectionDuration: 17s
-        tcp:
-          connectTimeout: 15s
+      route:
+        destination:
+          name: udproute/default/udp-app-1/rule/-1
+          settings:
+          - addressType: IP
+            endpoints:
+            - host: 7.7.7.7
+              port: 8162
+            protocol: UDP
+            weight: 1
+        loadBalancer:
+          consistentHash:
+            sourceIP: true
+        name: udproute/default/udp-app-1
+        timeout:
+          http:
+            connectionIdleTimeout: 16s
+            maxConnectionDuration: 17s
+          tcp:
+            connectTimeout: 15s

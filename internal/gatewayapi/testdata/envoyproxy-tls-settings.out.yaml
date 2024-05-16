@@ -6,13 +6,13 @@ backendTLSPolicies:
     name: policy-tls
     namespace: default
   spec:
-    targetRef:
-      group: ""
+    targetRefs:
+    - group: ""
       kind: Service
       name: https-backend
-    tls:
+    validation:
       hostname: example.com
-      wellKnownCACerts: System
+      wellKnownCACertificates: System
   status:
     ancestors:
     - ancestorRef:
@@ -165,10 +165,7 @@ xdsIR:
         mergeSlashes: true
       port: 10443
       routes:
-      - backendWeights:
-          invalid: 0
-          valid: 0
-        destination:
+      - destination:
           name: httproute/envoy-gateway/httproute-tls/rule/0
           settings:
           - addressType: IP

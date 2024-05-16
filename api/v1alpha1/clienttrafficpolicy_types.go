@@ -45,7 +45,7 @@ type ClientTrafficPolicySpec struct {
 	// This Policy and the TargetRef MUST be in the same namespace
 	// for this Policy to have effect and be applied to the Gateway.
 	// TargetRef
-	TargetRef gwapiv1a2.PolicyTargetReferenceWithSectionName `json:"targetRef"`
+	TargetRef gwapiv1a2.LocalPolicyTargetReferenceWithSectionName `json:"targetRef"`
 	// TcpKeepalive settings associated with the downstream client connection.
 	// If defined, sets SO_KEEPALIVE on the listener socket to enable TCP Keepalives.
 	// Disabled by default.
@@ -136,7 +136,7 @@ type ClientIPDetectionSettings struct {
 	// +optional
 	XForwardedFor *XForwardedForSettings `json:"xForwardedFor,omitempty"`
 	// CustomHeader provides configuration for determining the client IP address for a request based on
-	// a trusted custom HTTP header. This uses the the custom_header original IP detection extension.
+	// a trusted custom HTTP header. This uses the custom_header original IP detection extension.
 	// Refer to https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/http/original_ip_detection/custom_header/v3/custom_header.proto
 	// for more details.
 	//

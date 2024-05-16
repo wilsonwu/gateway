@@ -166,6 +166,9 @@ type ExtensionAPISettings struct {
 	// EnableEnvoyPatchPolicy enables Envoy Gateway to
 	// reconcile and implement the EnvoyPatchPolicy resources.
 	EnableEnvoyPatchPolicy bool `json:"enableEnvoyPatchPolicy"`
+	// EnableBackend enables Envoy Gateway to
+	// reconcile and implement the Backend resources.
+	EnableBackend bool `json:"enableBackend"`
 }
 
 // EnvoyGatewayProvider defines the desired configuration of a provider.
@@ -213,6 +216,10 @@ type EnvoyGatewayKubernetesProvider struct {
 	// If it's not set up, leader election will be active by default, using Kubernetes' standard settings.
 	// +optional
 	LeaderElection *LeaderElection `json:"leaderElection,omitempty"`
+
+	// ShutdownManager defines the configuration for the shutdown manager.
+	// +optional
+	ShutdownManager *ShutdownManager `json:"shutdownManager,omitempty"`
 }
 
 const (
@@ -533,6 +540,12 @@ type EnvoyGatewayAdminAddress struct {
 	// +optional
 	// +kubebuilder:default="127.0.0.1"
 	Host string `json:"host,omitempty"`
+}
+
+// ShutdownManager defines the configuration for the shutdown manager.
+type ShutdownManager struct {
+	// Image specifies the ShutdownManager container image to be used, instead of the default image.
+	Image *string `json:"image,omitempty"`
 }
 
 func init() {
